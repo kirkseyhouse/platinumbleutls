@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=100
+X-Powered-By: PHP/8.2.31
+Content-Type: text/html; charset=UTF-8
+Link: <https://platinumbleutls.com/wp-json/>; rel="https://api.w.org/"
+Link: <https://platinumbleutls.com/wp-json/wp/v2/pages/8>; rel="alternate"; title="JSON"; type="application/json"
+Link: <https://platinumbleutls.com/>; rel=shortlink
+Transfer-Encoding: chunked
+Date: Wed, 09 Sep 2026 09:57:09 GMT
+Server: LiteSpeed
+platform: hostinger
+panel: hpanel
+Content-Security-Policy: upgrade-insecure-requests
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000
+

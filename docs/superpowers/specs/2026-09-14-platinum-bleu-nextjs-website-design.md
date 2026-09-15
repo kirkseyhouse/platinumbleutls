@@ -30,10 +30,11 @@ Implementation decisions must use current sources in this order:
 
 1. Catherine's approved handoff and later explicit approvals.
 2. Current repository files and reviewed content/URL ledgers.
-3. `C:\dev\Platinum Bleu\PLATINUM-BLEU-NEXTJS-SEO-MIGRATION-STRATEGY.md`.
-4. The September 9 audit in `C:\dev\Platinum Bleu\outputs\wordpress-audit-2026-09-09\`, especially `public-crawl.json`, `page-sitemap.xml`, `MEETING-BRIEF.md`, and saved HTML.
-5. Current live responses from `https://platinumbleutls.com`.
-6. Current primary vendor documentation for Next.js, Vercel, Keystatic, Cloudflare, Google, and Housecall Pro.
+3. `docs/migration/PLATINUM-BLEU-NEXTJS-SEO-MIGRATION-STRATEGY.md`.
+4. The public September 9 baseline in `docs/migration/baseline/wordpress-2026-09-09/`, especially `public-crawl.json`, `page-sitemap.xml`, and the saved public HTML.
+5. The restricted authenticated audit that remains in `C:\dev\Platinum Bleu\outputs\wordpress-audit-2026-09-09\`, especially `MEETING-BRIEF.md` and the access/infrastructure evidence.
+6. Current live responses from `https://platinumbleutls.com`.
+7. Current primary vendor documentation for Next.js, Vercel, Keystatic, Cloudflare, Google, and Housecall Pro.
 
 The strategy remains authoritative except where the approved handoff deliberately supersedes it. The important superseding decisions are:
 
@@ -88,7 +89,7 @@ The current public phone is `(501) 404-8887`. The current approved public email 
 
 ### Repository boundary
 
-`C:\dev\Platinum Bleu\platinum-bleu-site` is the application repository. `C:\dev\Platinum Bleu` remains a non-Git evidence/document workspace. Audit evidence and raw backups stay outside the child repository unless a small, reviewed, non-sensitive derivative is deliberately copied into it.
+`C:\dev\Platinum Bleu\platinum-bleu-site` is the application repository. `C:\dev\Platinum Bleu` remains a non-Git evidence/document workspace. The migration strategy and public crawl/sitemap/HTML/header baseline live under `docs/migration/`. Authenticated audit evidence, access records, forensic material, and raw backups stay outside the child repository.
 
 The repository must ignore framework output, `.env` files, `housecall-api.txt`, `*api-key*`, private keys, recovery codes, customer data, WordPress backups, database exports, and raw backup directories. Secret scanning runs in local verification and continuous integration. The existing `C:\dev\Platinum Bleu\housecall-api.txt` must never be read, printed, displayed, hashed, copied, documented, transmitted, or committed during ordinary development.
 
@@ -537,4 +538,3 @@ No implementation plan should hide these gates inside technical tasks. Tasks mus
 - [Vercel custom-domain setup](https://vercel.com/docs/domains/set-up-custom-domain)
 - [Vercel Cloudflare migration guidance](https://vercel.com/kb/guide/migrate-to-vercel-from-cloudflare)
 - [Housecall Pro Public API](https://docs.housecallpro.com/)
-

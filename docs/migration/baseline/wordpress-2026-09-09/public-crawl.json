@@ -1,0 +1,376 @@
+{
+  "capturedAt": "2026-09-09T09:59:50.992Z",
+  "method": "Unauthenticated sequential HTML GET of sitemap URLs; elapsed times are not Core Web Vitals.",
+  "rows": [
+    {
+      "url": "https://platinumbleutls.com/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/",
+      "elapsedMs": 700,
+      "htmlBytes": 234790,
+      "title": "Best Tree Services in Little Rock | Tree Removal &amp; Trimming",
+      "description": "Professional tree services in Little Rock, AR including tree removal, trimming, pruning, stump grinding, and emergency tree care. Free estimates.",
+      "h1": [
+        "Platinum Bleu Tree Service\n"
+      ],
+      "canonical": "https://platinumbleutls.com/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 1
+    },
+    {
+      "url": "https://platinumbleutls.com/privacy-policy/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/privacy-policy/",
+      "elapsedMs": 474,
+      "htmlBytes": 101632,
+      "title": "Privacy Policy - Platinum Bleu Trees and Land Solutions",
+      "description": null,
+      "h1": [
+        "Privacy Policy",
+        "Privacy Policy"
+      ],
+      "canonical": "https://platinumbleutls.com/privacy-policy/",
+      "schema": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/about/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/about/",
+      "elapsedMs": 416,
+      "htmlBytes": 128766,
+      "title": "About - Platinum Bleu Trees and Land Solutions",
+      "description": null,
+      "h1": [
+        "About",
+        "About"
+      ],
+      "canonical": "https://platinumbleutls.com/about/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/services/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/services/",
+      "elapsedMs": 649,
+      "htmlBytes": 110160,
+      "title": "Services - Platinum Bleu Trees and Land Solutions",
+      "description": null,
+      "h1": [
+        "Services",
+        "Services"
+      ],
+      "canonical": "https://platinumbleutls.com/services/",
+      "schema": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/contact/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/contact/",
+      "elapsedMs": 457,
+      "htmlBytes": 110445,
+      "title": "Contact - Platinum Bleu Trees and Land Solutions",
+      "description": null,
+      "h1": [
+        "Contact",
+        "Contact Us"
+      ],
+      "canonical": "https://platinumbleutls.com/contact/",
+      "schema": [
+        "WebPage",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 1
+    },
+    {
+      "url": "https://platinumbleutls.com/service-areas/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/service-areas/",
+      "elapsedMs": 1156,
+      "htmlBytes": 123363,
+      "title": "Service Areas - Platinum Bleu Trees and Land Solutions",
+      "description": null,
+      "h1": [
+        "Service Areas",
+        "Services Areas"
+      ],
+      "canonical": "https://platinumbleutls.com/service-areas/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/tree-trimming-services/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/tree-trimming-services/",
+      "elapsedMs": 1049,
+      "htmlBytes": 154542,
+      "title": "Tree Trimming Services in Little Rock, AR | Platinum Bleu Tree Service",
+      "description": "Platinum Bleu Tree Service provides tree trimming services in Little Rock, AR, helping homeowners and businesses maintain healthy trees, improve safety, and manage overgrown branches.",
+      "h1": [
+        "Tree Trimming Services",
+        "Tree Trimming Services"
+      ],
+      "canonical": "https://platinumbleutls.com/tree-trimming-services/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/tree-removal-services/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/tree-removal-services/",
+      "elapsedMs": 1015,
+      "htmlBytes": 154060,
+      "title": "Tree Removal Services in Little Rock | Emergency Tree Removal Expert",
+      "description": "Get professional tree removal services in Little Rock, AR for hazardous, dead, or unwanted trees. Safe removal, emergency service, stump removal, and free estimates.",
+      "h1": [
+        "Tree Removal Services",
+        "Tree Removal Service"
+      ],
+      "canonical": "https://platinumbleutls.com/tree-removal-services/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/stump-removal-services/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/stump-removal-services/",
+      "elapsedMs": 892,
+      "htmlBytes": 153738,
+      "title": "Stump Removal Services in Little Rock, AR | Platinum Bleu Tree Service",
+      "description": "Platinum Bleu Tree Service provides stump removal services in Little Rock, AR, helping property owners remove unwanted stumps and create cleaner, more usable outdoor spaces.",
+      "h1": [
+        "Stump Removal Services",
+        "Stump Removal Services\n"
+      ],
+      "canonical": "https://platinumbleutls.com/stump-removal-services/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/emergency-tree-services/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/emergency-tree-services/",
+      "elapsedMs": 472,
+      "htmlBytes": 153752,
+      "title": "Emergency Tree Services in Little Rock, AR | Platinum Bleu Tree Service",
+      "description": "Platinum Bleu Tree Service provides emergency tree services in Little Rock, AR, including storm-damaged tree removal, fallen tree cleanup, hazardous limb removal, and emergency property clearing.",
+      "h1": [
+        "Emergency Tree Services",
+        "Emergency Tree Services\n"
+      ],
+      "canonical": "https://platinumbleutls.com/emergency-tree-services/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/debris-removal-services/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/debris-removal-services/",
+      "elapsedMs": 873,
+      "htmlBytes": 154140,
+      "title": "Debris Removal Services in Little Rock, AR | Platinum Bleu Tree Service",
+      "description": "Platinum Bleu Tree Service provides debris removal services in Little Rock, AR, including storm debris cleanup, tree debris removal, brush removal, and property cleanup solutions.",
+      "h1": [
+        "Debris Removal Services",
+        "Debris Removal Services\n"
+      ],
+      "canonical": "https://platinumbleutls.com/debris-removal-services/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/land-clearing-services/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/land-clearing-services/",
+      "elapsedMs": 902,
+      "htmlBytes": 154210,
+      "title": "Land Clearing Services in Little Rock, AR | Platinum Bleu Tree Service",
+      "description": "Platinum Bleu Tree Service provides land clearing services in Little Rock, AR for residential and commercial properties, including vegetation removal, lot clearing, and site preparation.",
+      "h1": [
+        "Land Clearing Services",
+        "Land Clearing Services\n"
+      ],
+      "canonical": "https://platinumbleutls.com/land-clearing-services/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/little-rock-ar/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/little-rock-ar/",
+      "elapsedMs": 920,
+      "htmlBytes": 149473,
+      "title": "Professional Tree Services in Little Rock | Platinum Bleu Tree Service",
+      "description": "Platinum Bleu Tree Service provides tree removal, tree trimming, stump removal, land clearing, debris removal, and emergency tree services in Little Rock, AR for residential and commercial properties.",
+      "h1": [
+        "Little Rock, AR",
+        "Tree Services in Little Rock, AR \n"
+      ],
+      "canonical": "https://platinumbleutls.com/little-rock-ar/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/conway-ar/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/conway-ar/",
+      "elapsedMs": 974,
+      "htmlBytes": 148769,
+      "title": "Tree Services in Conway, AR | Tree Cutting &amp; Trimming",
+      "description": "Platinum Bleu Tree Service delivers tree cutting, tree pruning, stump grinding, lot clearing, brush removal, and emergency tree services in Conway, AR for homes and commercial properties.",
+      "h1": [
+        "Conway, AR",
+        "Professional Tree Services in Conway, AR \n"
+      ],
+      "canonical": "https://platinumbleutls.com/conway-ar/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/benton-ar/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/benton-ar/",
+      "elapsedMs": 384,
+      "htmlBytes": 148563,
+      "title": "Emergency Tree Services Benton AR | Tree Removal &amp; Land Clearing",
+      "description": "Platinum Bleu Tree Service provides professional tree services in Benton, AR, including tree removal, tree trimming, stump removal, land clearing, debris cleanup, and emergency tree services.",
+      "h1": [
+        "Benton, AR",
+        "Tree Services in Benton, AR"
+      ],
+      "canonical": "https://platinumbleutls.com/benton-ar/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/maumelle-ar/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/maumelle-ar/",
+      "elapsedMs": 1030,
+      "htmlBytes": 148335,
+      "title": "Tree Services in Maumelle, AR | Tree Removal &amp; Tree Trimming",
+      "description": "Platinum Bleu Tree Service provides professional tree services in Maumelle, AR, including tree removal, tree trimming, stump grinding, land clearing, debris cleanup, and 24/7 emergency tree services. Get a free estimate today.",
+      "h1": [
+        "Maumelle, AR",
+        "Expert Tree Services in Maumelle, AR\n"
+      ],
+      "canonical": "https://platinumbleutls.com/maumelle-ar/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    },
+    {
+      "url": "https://platinumbleutls.com/sherwood-ar/",
+      "status": 200,
+      "finalUrl": "https://platinumbleutls.com/sherwood-ar/",
+      "elapsedMs": 1254,
+      "htmlBytes": 148387,
+      "title": "Tree Services in Sherwood, AR | Tree Cutting, Land Clearing &amp; Tree Removal",
+      "description": "Platinum Bleu Tree Service provides expert tree services in Sherwood, AR, including tree cutting, tree removal, land clearing, stump grinding, debris cleanup, and emergency tree services.",
+      "h1": [
+        "Sherwood, AR",
+        "Expert Tree Services in Sherwood, AR \n"
+      ],
+      "canonical": "https://platinumbleutls.com/sherwood-ar/",
+      "schema": [
+        "WebPage",
+        "ImageObject",
+        "BreadcrumbList",
+        "WebSite"
+      ],
+      "trackingMarkers": [],
+      "forms": 0
+    }
+  ]
+}

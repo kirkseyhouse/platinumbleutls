@@ -1,0 +1,38 @@
+# Dependencies and framework output
+node_modules/
+.next/
+out/
+.vercel/
+coverage/
+playwright-report/
+test-results/
+
+# Environment files and credentials
+.env
+.env.*
+*.key
+*.pem
+*api-key*
+housecall-api.txt
+secrets/
+private/
+recovery-codes*
+
+# Customer and operational data
+customer-data/
+lead-exports/
+
+# WordPress, database, and raw recovery material
+*.wpress
+*.wpstg
+*.sql
+*.sql.gz
+*.dump
+backups/
+raw-backups/
+
+# Local/editor noise
+.DS_Store
+Thumbs.db
+*.log
+

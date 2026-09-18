@@ -4,7 +4,7 @@ Session: 2026-09-18, America/Chicago. Latest ADC verification: 05:25:13 -05:00.
 
 ## Gate status
 
-**Phase 1: previously VERIFIED.** The earlier session verified project/billing/ADC and all 13 APIs; those cloud facts were not reverified during this repository-only implementation. **Phase 2: LOCAL CONTROLS IMPLEMENTED; LIVE ENFORCEMENT PENDING.** The GitHub Free profile is selected, the synchronized prompt and CI/build/promoter/IAM definitions exist, and local verification passes. Signing is configured; post-commit signature and history verification is recorded in the latest closeout below when completed. GitHub plan restrictions remain accepted residual risks, not an unresolved upgrade requirement. Phases 3 through 9 are not complete.
+**Phase 1: previously VERIFIED.** The earlier session verified project/billing/ADC and all 13 APIs; those cloud facts were not reverified during this repository-only implementation. **Phase 2: SIGNED LOCAL BASELINE COMPLETE; LIVE ENFORCEMENT PENDING.** The GitHub Free profile is selected, the synchronized prompt and CI/build/promoter/IAM definitions exist, and local verification passes. The baseline signature and full-history scan passed as recorded below. GitHub plan restrictions remain accepted residual risks, not an unresolved upgrade requirement. Phases 3 through 9 are not complete.
 
 Authority: `docs/production-readiness-runbook.md` and workspace `AGENTS.md`. The complete runbook was read before cloud action. No repository-specific AGENTS.md was found in the scoped repository search.
 
@@ -192,3 +192,13 @@ Execution limits: Docker Desktop's Linux engine was unavailable. No container bu
 External systems: read-only GitHub/public release/registry documentation lookups only. No GitHub push/settings write, Google Cloud resource/IAM/trigger mutation, Drive change, Notion change, or production deployment. The named Platinum Bleu Drive plugin had a local installation but no callable tools in this session; synchronization targeted the repository Codex prompt. No duplicate operating record was created.
 
 Next task: review the concrete provisioning/trigger plan, complete IAM database integration and staging prerequisites, then obtain the runbook's exact live-change approvals. Recommended model/effort: GPT-6 Astra, high.
+
+## Signed baseline closeout
+
+Root baseline commit: `23c039ce049580d11fc70d1592209e460e7c0a56`, `chore: establish signed dashboard implementation baseline`, on local branch `codex/production-baseline`. All 61 reviewed files are recorded in that initial commit. The existing app source and historical documentation were preserved; the added production controls are listed above.
+
+`git -c gpg.ssh.allowedSignersFile=deploy/allowed-signers verify-commit HEAD` returned exit 0 and a good Git signature for the repository's existing author email, with public fingerprint `SHA256:ePWy+aZ1yRrfZN00Y+4qvAxb8rrCi693/9DMTa5yFWM`. The first signing attempt waited because PowerShell passed literal quotes instead of an empty passphrase. That task-created key was corrected without changing its fingerprint; its owner-only ACL was read back before signing.
+
+After the baseline commit, the pinned scanner passed both the working tree and the complete one-commit history with zero findings. `git status --short --branch` showed a clean `codex/production-baseline` branch. This closeout is recorded in a separate signed documentation commit so the immutable baseline hash remains reproducible. The final task reply reports that commit and the final signature/history/status verification.
+
+No push occurred. Origin remains `https://github.com/kirkseyhouse/platinumbleutls.git`, and no upstream is configured for this local branch. GitHub CI is committed but has not executed remotely. Cloud Build and IAM are reviewable, locally validated configurations with live activation and negative authorization tests still pending. No production claim is made.

@@ -1,0 +1,60 @@
+# Builder only. Expand the connection checkout to full branch/tag history.
+# No personal GitHub token, deployment credential, or repository write grant.
+serviceAccount: projects/platinum-bleu-drive/serviceAccounts/pb-dashboard-builder@platinum-bleu-drive.iam.gserviceaccount.com
+logsBucket: gs://platinum-bleu-drive-pb-build-logs
+timeout: 1800s
+options:
+  logging: GCS_ONLY
+  logStreamingOption: STREAM_OFF
+  requestedVerifyOption: VERIFIED
+  sourceProvenanceHash: ['SHA256']
+substitutions:
+  _REPOSITORY_RESOURCE: REQUIRED_CLOUD_BUILD_V2_REPOSITORY_RESOURCE
+steps:
+  - id: verify-source
+    name: node:24.15.0-bookworm@sha256:f22d6a1f082c02f292e86929b5b0442ac2e5eaf438a5dea9b1566601c3e05940
+    entrypoint: bash
+    env:
+      - PB_REPOSITORY_RESOURCE=${_REPOSITORY_RESOURCE}
+      - PB_EXPECTED_COMMIT=$COMMIT_SHA
+    args:
+      - -euc
+      - |
+        node scripts/prepare-build-history.js
+        test "$$(git rev-parse HEAD)" = "$COMMIT_SHA"
+        test "$$(git rev-parse --is-shallow-repository)" = false
+        git -c gpg.format=ssh -c gpg.ssh.allowedSignersFile=deploy/allowed-signers verify-commit HEAD
+        npm ci --no-audit --no-fund
+        npm test
+        npm run check
+        npm run security:scan
+        npm sbom --omit=dev --sbom-format=cyclonedx > .runtime/sbom.cdx.json
+  - id: verify-promotion-program
+    name: gcr.io/google.com/cloudsdktool/google-cloud-cli:578.0.0-slim@sha256:70f3244ccf80a83c23805b5ff9f0b1a88d57b3fd07831d57a311e70625b289e9
+    entrypoint: bash
+    args: ['-euc', 'python3 -m unittest discover -s tests -p "*_test.py" && python3 scripts/render-cloud-build.py --check']
+  - id: build
+    name: gcr.io/cloud-builders/docker@sha256:001fb4a870a84485cf198c80002f7af42f6456f2dbc261d70a0b5f0111470df4
+    args: ['build', '--pull', '--label', 'org.opencontainers.image.revision=$COMMIT_SHA', '-t', 'us-central1-docker.pkg.dev/platinum-bleu-drive/pb-dashboard/dashboard:$COMMIT_SHA', '.']
+  - id: publish-for-scan
+    name: gcr.io/cloud-builders/docker@sha256:001fb4a870a84485cf198c80002f7af42f6456f2dbc261d70a0b5f0111470df4
+    args: ['push', 'us-central1-docker.pkg.dev/platinum-bleu-drive/pb-dashboard/dashboard:$COMMIT_SHA']
+  - id: await-artifact-analysis
+    name: gcr.io/google.com/cloudsdktool/google-cloud-cli:578.0.0-slim@sha256:70f3244ccf80a83c23805b5ff9f0b1a88d57b3fd07831d57a311e70625b289e9
+    entrypoint: python3
+    args:
+      - -c
+      - |
+        import sys
+        sys.path.insert(0, 'scripts')
+        from promotion import gcloud, wait_scan, IMAGE
+        image = gcloud('artifacts', 'docker', 'images', 'describe', IMAGE + ':$COMMIT_SHA')
+        digest = image['image_summary']['digest']
+        wait_scan(digest)
+        print('Verified image: ' + IMAGE + '@' + digest)
+images:
+  - us-central1-docker.pkg.dev/platinum-bleu-drive/pb-dashboard/dashboard:$COMMIT_SHA
+artifacts:
+  objects:
+    location: gs://platinum-bleu-drive-pb-build-logs/evidence/$BUILD_ID/
+    paths: ['.runtime/sbom.cdx.json']

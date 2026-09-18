@@ -1,0 +1,22 @@
+// Isolated synthetic browser QA only. Not in Docker; no route provisions sessions.
+import {PGlite} from '@electric-sql/pglite';
+import {btree_gist} from '@electric-sql/pglite/contrib/btree_gist';
+import {readFile,readdir,writeFile,mkdir} from 'node:fs/promises';
+import {randomBytes} from 'node:crypto';
+import {createApp} from '../src/app.js';
+import {hash} from '../src/auth.js';
+if(process.env.NODE_ENV==='production')throw Error('QA fixture cannot run in production.');
+const pg=new PGlite({extensions:{btree_gist}});
+for(const file of (await readdir(new URL('../migrations',import.meta.url))).sort())await pg.exec(await readFile(new URL('../migrations/'+file,import.meta.url),'utf8'));
+const tenant=(await pg.query("INSERT INTO tenants(name,domain) VALUES('Synthetic QA workspace','platinumbleutls.com') RETURNING id")).rows[0].id;
+const owner=(await pg.query("INSERT INTO members(tenant_id,email,name,roles,subject) VALUES($1,'test-owner@platinumbleutls.com','DP · Synthetic QA',ARRAY['owner'],'test-only-subject') RETURNING id",[tenant])).rows[0].id;
+const secret=randomBytes(32).toString('base64url');await pg.query("INSERT INTO sessions(token_hash,member_id,csrf,permission_version,expires_at) VALUES($1,$2,'qa-csrf',1,now()+interval '1 hour')",[hash(secret),owner]);
+await mkdir(new URL('../.runtime',import.meta.url),{recursive:true});
+const customer=(await pg.query("INSERT INTO customers(tenant_id,name,email,address) VALUES($1,'Sample customer · synthetic','sample@example.invalid','Synthetic service location') RETURNING id",[tenant])).rows[0].id;
+await pg.query("INSERT INTO jobs(tenant_id,customer_id,title) VALUES($1,$2,'Tree removal · sample draft')",[tenant,customer]);
+await pg.query("INSERT INTO leads(tenant_id,customer_id,source,next_action,next_action_at,owner_id) VALUES($1,$2,'Synthetic sample','Review scope and confirm estimate availability',now()+interval '1 day',$3)",[tenant,customer,owner]);
+const adapt=client=>({async query(...args){const r=await client.query(...args);return {...r,rowCount:r.rows.length||r.affectedRows||0};}});
+const db={...adapt(pg),tx:fn=>pg.transaction(tx=>fn(adapt(tx)))};
+const port=Number(process.env.QA_PORT||8082);
+const server=createApp({db,config:{origin:'http://localhost:'+port,operationalMode:'custom'}}).listen(port,'127.0.0.1',async()=>{await writeFile(new URL('../.runtime/qa-session.json',import.meta.url),JSON.stringify({secret,url:'http://localhost:'+port,pid:process.pid}));console.log('Synthetic QA server: http://localhost:'+port);});
+server.on('error',error=>{console.error(error.code);process.exitCode=1;pg.close();});

@@ -1,0 +1,54 @@
+# Reviewable template. Project identity verified against Google Cloud on 2026-09-16.
+# Project number: 531881403960. Replace remaining REQUIRED_* after setup approval.
+# Deploy behind a managed HTTPS load balancer with restricted service ingress.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: platinum-bleu-dashboard
+  annotations:
+    run.googleapis.com/ingress: internal-and-cloud-load-balancing
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: '0'
+        autoscaling.knative.dev/maxScale: '5'
+        run.googleapis.com/cloudsql-instances: platinum-bleu-drive:REQUIRED_REGION:REQUIRED_INSTANCE
+    spec:
+      serviceAccountName: REQUIRED_APP_SERVICE_ACCOUNT
+      containerConcurrency: 8
+      timeoutSeconds: 60
+      containers:
+        - image: REQUIRED_IMAGE_DIGEST
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: APP_ORIGIN
+              value: https://ops.platinumbleutls.com
+            - name: OPERATIONAL_MODE
+              value: hcp_coexistence
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: pb-database-url
+                  key: latest
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: pb-google-client-id
+                  key: latest
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: pb-google-client-secret
+                  key: latest
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080

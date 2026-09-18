@@ -1,0 +1,9 @@
+# Advisory review routing on the private GitHub Free repository.
+* @kirkseyhouse
+/.github/ @kirkseyhouse
+/deploy/ @kirkseyhouse
+/scripts/ @kirkseyhouse
+/src/ @kirkseyhouse
+/migrations/ @kirkseyhouse
+/cloudbuild*.yaml @kirkseyhouse
+/.gitleaks.toml @kirkseyhouse

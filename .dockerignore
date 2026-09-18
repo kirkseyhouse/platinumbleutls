@@ -1,0 +1,15 @@
+# Only runtime inputs may enter the build context.
+**
+!Dockerfile
+!.dockerignore
+!package.json
+!package-lock.json
+!src/
+!src/**
+!public/
+!public/**
+!scripts/
+!scripts/migrate.js
+!scripts/provision.js
+!migrations/
+!migrations/**

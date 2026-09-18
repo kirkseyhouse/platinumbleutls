@@ -1,0 +1,3 @@
+title = "Platinum Bleu default secret rules, no blanket exemptions"
+[extend]
+useDefault = true

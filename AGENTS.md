@@ -1,8 +1,8 @@
-<!-- cat-agent-consumer {"schema_version":1,"id":"consumer.platinum-bleu-site","kind":"adapter","business":"platinum-bleu","version":"0.1.0","shared_root":"C:\\dev\\cat-agent-system","shared_commit":"d707264a63e6d5678eb778bdcb8e16fae9b2912e","project_root":"C:\\dev\\Platinum-Bleu-shared-agent-consumer","overlay":"businesses/platinum-bleu/overlay.md"} -->
+<!-- cat-agent-consumer {"schema_version":1,"id":"consumer.platinum-bleu-site","kind":"adapter","business":"platinum-bleu","version":"0.1.2","shared_root":"C:\\dev\\cat-agent-system","shared_commit":"ded5ef67353d55b60058aec05e920c32a29e2892","project_root":"C:\\dev\\Platinum-Bleu-shared-agent-consumer","overlay":"businesses/platinum-bleu/overlay.md"} -->
 # Shared-system consumer loader
 
-This isolated website-repository consumer accepts shared guidance version `0.1.0` at
-`d707264a63e6d5678eb778bdcb8e16fae9b2912e`. All existing local instructions follow unchanged.
+This isolated website-repository consumer accepts shared guidance version `0.1.2` at
+`ded5ef67353d55b60058aec05e920c32a29e2892`. All existing local instructions follow unchanged.
 
 Before shared-dependent work:
 

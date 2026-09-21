@@ -44,6 +44,10 @@ spec:
               value: platinum_bleu
             - name: DB_IAM_USER
               value: pb-dashboard-runtime@platinum-bleu-drive.iam
+            - name: NOTION_OPERATIONS_DATA_SOURCE_ID
+              value: 5744f794-ce07-4893-b477-4fbdc7b54a3f
+            - name: NOTION_EXPECTED_WORKSPACE_NAME
+              value: Platinum Bleu
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -54,6 +58,11 @@ spec:
                 secretKeyRef:
                   name: pb-google-client-secret
                   key: REQUIRED_GOOGLE_CLIENT_SECRET_VERSION
+            - name: NOTION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: pb-notion-token
+                  key: REQUIRED_NOTION_TOKEN_VERSION
           startupProbe:
             periodSeconds: 10
             failureThreshold: 24

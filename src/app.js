@@ -9,6 +9,7 @@ import { tenantTx, audit } from './db.js';
 import { fail, requirePermission, allowed, restricted, normalizeContact, calculateInvoice, scheduleGate } from './domain.js';
 import {connectorRoutes} from './connectors.js';
 import {webhookRoutes} from './webhooks.js';
+import {readOperatingCommandCenter} from './notion.js';
 
 const uuid=z.string().uuid(),text=z.string().trim().min(1).max(250);
 const optionalText=z.string().trim().max(2000).nullish();
@@ -31,7 +32,7 @@ export function createApp({db,config}){
  authRoutes(app,{db,config});
  app.use('/api',rateLimit({windowMs:60000,limit:240,standardHeaders:'draft-8',legacyHeaders:false}),sessionMiddleware(db),csrfMiddleware(config));
  connectorRoutes(app,{db,config});
- app.get('/api/v1/me',(req,res)=>res.json({id:req.actor.id,name:req.actor.name,email:req.actor.email,roles:req.actor.roles,csrf:req.actor.csrf,permissions:['customer.read','customer.write','job.read','job.write','job.approve','job.schedule','job.status','lead.read','lead.write','invoice.read','invoice.write','invoice.approve','resource.read','resource.write','document.read','document.write','integration.read','integration.manage','audit.read','member.manage'].filter(p=>allowed(req.actor.roles,p))}));
+ app.get('/api/v1/me',(req,res)=>res.json({id:req.actor.id,name:req.actor.name,email:req.actor.email,roles:req.actor.roles,csrf:req.actor.csrf,permissions:['command.read','customer.read','customer.write','job.read','job.write','job.approve','job.schedule','job.status','lead.read','lead.write','invoice.read','invoice.write','invoice.approve','resource.read','resource.write','document.read','document.write','integration.read','integration.manage','audit.read','member.manage'].filter(p=>allowed(req.actor.roles,p))}));
  app.post('/api/v1/logout',async(req,res)=>{await db.query('DELETE FROM sessions WHERE token_hash=$1',[req.sessionHash]);res.clearCookie('__Host-pb_session',{secure:true,httpOnly:true,sameSite:'lax',path:'/'});res.json({ok:true});});
  const read=(path,permission,fn)=>app.get('/api/v1'+path,async(req,res)=>{requirePermission(req.actor,permission);res.json(await tenantTx(db,req.actor,tx=>fn(tx,req)));});
  const write=(path,permission,schema,fn,method='post')=>app[method]('/api/v1'+path,async(req,res)=>{
@@ -57,6 +58,7 @@ export function createApp({db,config}){
   const invoices=allowed(actor.roles,'invoice.read')?(await tx.query("SELECT count(*) FILTER(WHERE status='draft')::int AS drafts FROM invoices WHERE tenant_id=$1",[actor.tenant_id])).rows[0]:null;
   return {jobs,leads,invoices,mode:config.operationalMode,as_of:new Date().toISOString()};
  })));
+ app.get('/api/v1/command-center',async(req,res)=>{requirePermission(req.actor,'command.read');res.json(await readOperatingCommandCenter(config,{roles:req.actor.roles}));});
  write('/customers','customer.write',contactSchema,async(tx,req,input)=>{
   const {email,phone}=normalizeContact(input);
   // Serialize matching checks per tenant, including concurrent imports.

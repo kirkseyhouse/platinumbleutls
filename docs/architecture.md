@@ -271,7 +271,7 @@ Proposed lifecycle, subject to owner/bookkeeper retention approval: quarantine e
 
 Google Drive sync uses existing authorized folders and external IDs; do not create a second master for the same contract. Prefer app-created/explicitly selected files and minimum OAuth scopes; broader Shared Drive sync may need additional read scopes and administrator consent. Persist changes page tokens, process tombstones, and reconcile periodically. [Drive change tracking](https://developers.google.com/workspace/drive/api/guides/manage-changes).
 
-Notion: reuse existing dashboard and Intake record URLs. Private workspace pages are not guaranteed to work as arbitrary iframes. Provide authenticated deep links first; where an embedded view is supported, keep its access intact. Any API-rendered subset must be explicitly shared to the integration and still filtered by app permissions; integration access is not proof that every app user may read it. Never publish private pages to make embedding work.
+Notion: reuse existing dashboard and Intake record URLs. Private workspace pages are not guaranteed to work as arbitrary iframes. Slice 1 calls the approved Notion API directly at request time, verifies the token's bot workspace, queries only the configured Operations Intake & Triage data source, and returns role-filtered fields with authenticated deep links. It does not cache or write Notion content. The data source must be explicitly shared to the integration, and integration access is not proof that every app user may read it; application RBAC therefore limits the command center to owner and Operations roles. Never publish private pages to make embedding work.
 
 ## 6. API contract
 
@@ -280,6 +280,7 @@ Base path /api/v1. JSON request/response schemas; ISO 8601 timestamps; currency 
 | Endpoint | Permission and behavior | Response |
 |---|---|---|
 | GET /me | Active session; current role/permission summary | 200 identity; 401 expired |
+| GET /command-center | command.read; DP or Cat projection from live read-only Notion data | 200 explicit ready, empty, stale, unavailable, or integration_error state |
 | GET /dashboard | Permission-filtered queues, freshness, partial failures | 200 with source timestamps |
 | POST /imports/customers | customer.import; staging only | 202 batch ID |
 | GET /imports/{id} | Import owner or authorized manager | 200 counts and review candidates |

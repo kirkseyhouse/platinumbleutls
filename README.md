@@ -13,7 +13,7 @@ Private operational application for DP, Cat, and Tonya. Target: Google Cloud Run
 - Job drafting, owner-attested agreement/deposit gates, resource reservations with PostgreSQL overlap exclusion, and guarded start/complete/cancel transitions. Completion/cancellation releases reservations.
 - App visibility assignments, separate from production resource reservations.
 - Invoice drafts, multi-line editing, server-side integer amount calculation, optimistic locking, approval, and a database guard against alteration of issued financial content.
-- Role-filtered overview counts across all records, source labels, empty/error states, audit trail, connection health, and existing Notion HQ link.
+- Role-filtered overview counts across all records, source labels, empty/error states, audit trail, connection health, and a read-only Operating Command Center sourced directly from the canonical Notion Intake data source.
 - Private document metadata, quarantined upload, type/size checks, and authenticated streaming for scan-approved files. There is **no deployed scanner yet**; uploads cannot become usable without an approved scanning implementation.
 - Encrypted OAuth token vault; Google and QBO consent handlers; bounded read-only provider synchronization adapters; QBO/Gmail authenticated webhook receivers, durable deduplication, retries, and dead-letter state.
 - Docker image recipe, Cloud Run service template, private Cloud SQL IAM connector, administrative database bootstrap, migration runner, restricted runtime grants, and secure membership provisioning CLI.
@@ -31,7 +31,7 @@ Do not interpret a connector in Codex as authorization or credentials for this a
 Requires Node 24 (the checked runtime), npm, and PostgreSQL with `btree_gist`. Use a dedicated development database. PGlite is used only by isolated tests, never production.
 
 1. `npm ci`
-2. Create an ignored `.env` using `.env.example`. Configure an approved OAuth client, exact app origin, and database through a secure local mechanism. Never paste secrets into chat.
+2. Create an ignored `.env` using `.env.example`. Configure an approved OAuth client, exact app origin, and database through a secure local mechanism. For the Operating Command Center, set `NOTION_TOKEN`, `NOTION_OPERATIONS_DATA_SOURCE_ID`, and the exact `NOTION_EXPECTED_WORKSPACE_NAME`. Never paste secrets into chat or copy them into documentation.
 3. For local development only, set `MIGRATION_DATABASE_URL` and `DATABASE_URL` to dedicated PostgreSQL roles, then run `npm run migrate`. Production rejects these URL variables.
 4. Provision exact approved identities: `npm run provision -- <company-email> "<name>" <role>`. Do not guess DP's or Tonya's email. Cat's role is `ops`; Tonya's is `bookkeeper`.
 5. `npm start` starts the sign-in surface. Without required configuration, authentication/data access fail closed.
@@ -39,6 +39,8 @@ Requires Node 24 (the checked runtime), npm, and PostgreSQL with `btree_gist`. U
 For production database activation, first provision the three Cloud SQL IAM users and their Google IAM access. Run `deploy/database-bootstrap.sql` once as the approved database administrator, run migrations as `pb-dashboard-migrate`, then apply `deploy/runtime-role.sql` as that migration identity. Runtime and worker use only `INSTANCE_CONNECTION_NAME`, `DB_NAME`, and their exact `DB_IAM_USER`; they never receive a production database URL or password. This sequence requires a reviewed live plan and authorization before it is applied.
 
 Secure `__Host-` cookies require HTTPS in production. Browser handling of localhost secure cookies must be verified with the actual development OAuth setup; do not weaken cookie settings as a workaround. The production process rejects database superusers, RLS-bypass roles, and table-owning runtime logins.
+
+The command-center path is read-only. It verifies the token's bot workspace before querying the approved Operations Intake & Triage data source, follows bounded pagination, and returns live normalized fields without writing snapshots to the dashboard database. Owner sessions receive only DP-owned actions and decisions; Operations sessions receive Cat's operating view. Missing configuration, successful empty reads, stale evidence, and provider errors are separate states, and unavailable values remain unknown rather than zero. Production maps `NOTION_TOKEN` from a numbered `pb-notion-token` Secret Manager version; local development uses the ignored `.env` only.
 
 ## Validation
 
@@ -61,7 +63,7 @@ Tests exercise real PostgreSQL semantics via PGlite, including migrations, row s
 3. Live connector validation and scopes/account ownership. QBO webhook receiver implements a specific `eventNotifications` envelope; confirm the configured Intuit delivery version before enabling it. Unsupported envelopes are rejected.
 4. Full financial lifecycle and approved bidirectional QBO mapping, including single-writer ownership while HCP is active. Existing HCP–QBO integration has not been inspected.
 5. Malware scanner, approved file-retention policies, legal holds, object/database recovery, and orphan-upload reconciliation.
-6. Gmail currently reads up to 100 inbox message metadata records. History cursor processing/watch renewal is not implemented. Calendar reads a bounded past/future window; outbound federation, incremental cursors, watch renewal, and deletion reconciliation remain incomplete. Drive lists authorized files under a designated folder; full change-feed/tombstone sync is incomplete. Notion currently provides an existing HQ link and a root-page metadata adapter, not embedded private content or task writes.
+6. Gmail currently reads up to 100 inbox message metadata records. History cursor processing/watch renewal is not implemented. Calendar reads a bounded past/future window; outbound federation, incremental cursors, watch renewal, and deletion reconciliation remain incomplete. Drive lists authorized files under a designated folder; full change-feed/tombstone sync is incomplete. Notion command-center code is read-only and does not write tasks; live dashboard-token identity, sharing, rate-limit, and retrieval verification remain required before the slice is acceptance-complete.
 7. Read-only HCP adapters require actual endpoint/pagination verification, removal/tombstone handling, and performance tests before activation. HCP refreshes stage both collections within a 32 MB / 10,000-record-per-collection limit, then atomically publish snapshots, projections, and success state. Invalid pagination or a mapping failure preserves the previous dataset. These local checks do not establish that provider pagination is a point-in-time snapshot.
 8. List views are limited to 200 rows; overview aggregates are complete. Cursor pagination, large-import review, named duplicate resolution, monitoring/dead-letter UI, and scale testing remain required for growth.
 9. Multi-region recovery, distributed rate-limit enforcement, audit export/immutability outside the app database, scoped database service privileges, and formal security review.
@@ -70,4 +72,4 @@ The detailed target architecture is in [docs/architecture.md](docs/architecture.
 
 ## Source and ownership
 
-The existing operational record is [Platinum Bleu HQ](https://app.notion.com/p/3d8401438e5081e18352cf276fd2b344). Current task changes do not update Notion, HCP, accounting, Drive, DNS, or cloud resources. Keep those systems unchanged until their corresponding integration/cutover actions are authorized.
+The existing operational record is [Platinum Bleu HQ](https://app.notion.com/p/3d8401438e5081e18352cf276fd2b344). The dashboard application never writes to Notion in Slice 1. Build-session status is maintained separately on the existing canonical Operations Intake & Triage integration task through the authorized Notion connector. No HCP, accounting, Drive, DNS, deployment, or cloud resource was changed by this work.

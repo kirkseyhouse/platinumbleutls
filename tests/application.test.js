@@ -32,6 +32,15 @@ test('anonymous and forged headers cannot access data; missing OAuth fails close
  assert.equal((await request(app).get('/auth/google/callback?code=x&state=y')).status,503);
  for(const path of ['/auth/password','/auth/magic-link','/signin-with-chatgpt','/dev/login'])assert.equal((await request(app).get(path)).status,404);
 });
+test('command center is explicit when Notion is unavailable and limited to operating roles',async()=>{
+ const ownerResult=await client('get','/command-center');
+ assert.equal(ownerResult.status,200,JSON.stringify(ownerResult.body));
+ assert.equal(ownerResult.body.view,'dp');
+ assert.equal(ownerResult.body.state,'unavailable');
+ assert.equal(ownerResult.body.items,null);
+ assert.equal((await client('get','/command-center','book')).status,403);
+ assert.equal((await client('get','/command-center','crew')).status,403);
+});
 test('verified webhooks are durably deduped and failed processing retries safely',async()=>{
  const body=JSON.stringify({eventNotifications:[{realmId:'test-realm',dataChangeEvent:{entities:[]}}]}),signature=createHmac('sha256',config.qboWebhookKey).update(body).digest('base64');
  for(let i=0;i<2;i++)assert.equal((await request(app).post('/webhooks/quickbooks').set('content-type','application/json').set('intuit-signature',signature).send(body)).status,204);

@@ -21,11 +21,14 @@ class PromotionTest(unittest.TestCase):
         env = {'NODE_ENV': 'production', 'OPERATIONAL_MODE': 'hcp_coexistence',
                'APP_ORIGIN': 'https://ops.platinumbleutls.com',
                'INSTANCE_CONNECTION_NAME': 'platinum-bleu-drive:us-central1:pb-prod-sql',
-               'DB_NAME': 'platinum_bleu', 'DB_IAM_USER': 'pb-dashboard-runtime@platinum-bleu-drive.iam'}
+               'DB_NAME': 'platinum_bleu', 'DB_IAM_USER': 'pb-dashboard-runtime@platinum-bleu-drive.iam',
+               'NOTION_OPERATIONS_DATA_SOURCE_ID': '5744f794-ce07-4893-b477-4fbdc7b54a3f',
+               'NOTION_EXPECTED_WORKSPACE_NAME': 'Platinum Bleu'}
         entries = [{'name': k, 'value': v} for k, v in env.items()]
         entries += [
             {'name': 'GOOGLE_CLIENT_ID', 'valueFrom': {'secretKeyRef': {'name': 'pb-google-client-id', 'key': '7'}}},
             {'name': 'GOOGLE_CLIENT_SECRET', 'valueFrom': {'secretKeyRef': {'name': 'pb-google-client-secret', 'key': '9'}}},
+            {'name': 'NOTION_TOKEN', 'valueFrom': {'secretKeyRef': {'name': 'pb-notion-token', 'key': '11'}}},
         ]
         return {'metadata': {'name': 'pb-dashboard', 'annotations': {'run.googleapis.com/ingress': 'internal-and-cloud-load-balancing'}},
                 'spec': {'template': {'metadata': {'annotations': {
@@ -39,7 +42,10 @@ class PromotionTest(unittest.TestCase):
         for name, value in [('DB_IAM_USER', 'pb-dashboard-migrate@platinum-bleu-drive.iam'),
                             ('DB_NAME', 'other'), ('INSTANCE_CONNECTION_NAME', 'other:region:sql'),
                             ('NODE_ENV', 'development'), ('APP_ORIGIN', 'https://other.example'),
-                            ('OPERATIONAL_MODE', 'custom'), ('DATABASE_URL', ''), ('MIGRATION_DATABASE_URL', '')]:
+                            ('OPERATIONAL_MODE', 'custom'),
+                            ('NOTION_OPERATIONS_DATA_SOURCE_ID', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
+                            ('NOTION_EXPECTED_WORKSPACE_NAME', 'Other Workspace'),
+                            ('DATABASE_URL', ''), ('MIGRATION_DATABASE_URL', '')]:
             service = self.service()
             env = service['spec']['template']['spec']['containers'][0]['env']
             env[:] = [e for e in env if e['name'] != name] + [{'name': name, 'value': value}]
@@ -54,6 +60,9 @@ class PromotionTest(unittest.TestCase):
             ('GOOGLE_CLIENT_ID', {'name': 'GOOGLE_CLIENT_ID', 'value': 'literal'}),
             ('GOOGLE_CLIENT_SECRET', {'name': 'GOOGLE_CLIENT_SECRET', 'valueFrom': {'secretKeyRef': {'name': 'pb-google-client-secret', 'key': 'latest'}}}),
             ('GOOGLE_CLIENT_ID', {'name': 'GOOGLE_CLIENT_ID', 'valueFrom': {'secretKeyRef': {'name': 'wrong', 'key': '7'}}}),
+            ('NOTION_TOKEN', {'name': 'NOTION_TOKEN', 'value': 'literal'}),
+            ('NOTION_TOKEN', {'name': 'NOTION_TOKEN', 'valueFrom': {'secretKeyRef': {'name': 'pb-notion-token', 'key': 'latest'}}}),
+            ('NOTION_TOKEN', {'name': 'NOTION_TOKEN', 'valueFrom': {'secretKeyRef': {'name': 'wrong', 'key': '11'}}}),
         ]:
             service = self.service()
             env = service['spec']['template']['spec']['containers'][0]['env']

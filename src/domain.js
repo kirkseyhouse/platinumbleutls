@@ -3,8 +3,8 @@ export class Problem extends Error {
 }
 export const fail=(status,message)=>{throw new Problem(status,message);};
 const grants={
-  owner:['customer.read','customer.write','job.read','job.write','job.schedule','job.status','job.approve','lead.read','lead.write','invoice.read','invoice.write','invoice.approve','document.read','document.write','resource.read','resource.write','member.manage','integration.read','integration.manage','audit.read'],
-  ops:['customer.read','customer.write','job.read','job.write','job.schedule','job.status','lead.read','lead.write','invoice.read','invoice.write','document.read','document.write','resource.read','resource.write','integration.read'],
+  owner:['command.read','customer.read','customer.write','job.read','job.write','job.schedule','job.status','job.approve','lead.read','lead.write','invoice.read','invoice.write','invoice.approve','document.read','document.write','resource.read','resource.write','member.manage','integration.read','integration.manage','audit.read'],
+  ops:['command.read','customer.read','customer.write','job.read','job.write','job.schedule','job.status','lead.read','lead.write','invoice.read','invoice.write','document.read','document.write','resource.read','resource.write','integration.read'],
   bookkeeper:['customer.read','job.read','invoice.read','invoice.write','document.read','integration.read','audit.read'],
   estimator:['customer.read','job.read','lead.read','lead.write','document.read','document.write'],
   crew:['job.read','job.status','document.read','document.write'],

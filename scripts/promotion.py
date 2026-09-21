@@ -96,9 +96,14 @@ def validate_service(service):
     require(env.get('DB_NAME') == 'platinum_bleu', 'Database name mismatch')
     require(env.get('DB_IAM_USER') == 'pb-dashboard-runtime@' + PROJECT + '.iam',
             'Database IAM identity mismatch')
+    require(env.get('NOTION_OPERATIONS_DATA_SOURCE_ID') == '5744f794-ce07-4893-b477-4fbdc7b54a3f',
+            'Notion operations data source mismatch')
+    require(env.get('NOTION_EXPECTED_WORKSPACE_NAME') == 'Platinum Bleu',
+            'Notion workspace name mismatch')
     by_name = {entry.get('name'): entry for entry in entries}
     for variable, secret in [('GOOGLE_CLIENT_ID', 'pb-google-client-id'),
-                             ('GOOGLE_CLIENT_SECRET', 'pb-google-client-secret')]:
+                             ('GOOGLE_CLIENT_SECRET', 'pb-google-client-secret'),
+                             ('NOTION_TOKEN', 'pb-notion-token')]:
         entry = by_name.get(variable, {})
         reference = entry.get('valueFrom', {}).get('secretKeyRef', {})
         require('value' not in entry and reference.get('name') == secret and

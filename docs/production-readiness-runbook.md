@@ -306,7 +306,7 @@ Use approved staging records and stay in `hcp_coexistence`. Do not enable QBO wr
 | Drive | `drive.file`, designated folder, pagination, moved/deleted behavior, no broad crawl. |
 | QuickBooks | Exact realm/endpoint, read-only mapping, refresh, signed/replayed webhook, envelope rejection, 401/403/429/5xx/timeout. |
 | HCP | Exact company/timezone, live endpoint/pagination/mapping/tombstones, atomic two-collection publication, prior snapshot on failure. |
-| Notion | Exact workspace/root metadata, revocation/rate limit, no duplicate operating system. |
+| Notion | Exact token bot workspace, approved Operations Intake data-source sharing, bounded pagination, revocation/rate limit, explicit empty/stale/error states, no writes, and no duplicate operating system. |
 
 Every provider call needs finite timeout, safe/idempotent retries only, honored `Retry-After`, capped exponential backoff with jitter, no automatic retry for 400/401/403 or uncertain writes, attempt cap/dead-letter, last-good snapshot with stale state, secret-free correlation logs, and alerts. Implement and test any missing behavior.
 

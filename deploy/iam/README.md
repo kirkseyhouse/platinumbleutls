@@ -16,7 +16,7 @@ terraform plan -var='repository_connection_name=APPROVED_CONNECTION_NAME' -out=r
 
 Keep plan/state/tfvars files out of Git. Choose a protected remote state backend before applying; the local validation configuration does not establish state security. No apply command is part of this task.
 
-Review `secret_consumers` explicitly; its default is empty. SQL IAM grants are conditional on the primary instance. PostgreSQL role membership, IAM DB user creation and runtime non-ownership remain separate controls.
+Review `secret_consumers` explicitly; its default is empty. SQL IAM grants are conditional on the primary instance. Terraform defines the IAM DB users; `deploy/database-bootstrap.sql` and `deploy/runtime-role.sql` define PostgreSQL membership and runtime non-ownership. Those database controls remain unapplied until an authorized live activation.
 
 Resource-level Artifact Registry writer and reader grants isolate build and deployment. Each identity can create objects only in its own log bucket. Container Analysis occurrence reads and build metadata reads are project-level API requirements; they reveal project metadata and are recorded exceptions to narrower resource scope, not write/admin capabilities. The dedicated repository connection should contain only this repository: its read-token grant can read every repository attached to that connection. The token is short lived and read only.
 

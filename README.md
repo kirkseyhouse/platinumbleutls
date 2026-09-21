@@ -16,7 +16,7 @@ Private operational application for DP, Cat, and Tonya. Target: Google Cloud Run
 - Role-filtered overview counts across all records, source labels, empty/error states, audit trail, connection health, and existing Notion HQ link.
 - Private document metadata, quarantined upload, type/size checks, and authenticated streaming for scan-approved files. There is **no deployed scanner yet**; uploads cannot become usable without an approved scanning implementation.
 - Encrypted OAuth token vault; Google and QBO consent handlers; bounded read-only provider synchronization adapters; QBO/Gmail authenticated webhook receivers, durable deduplication, retries, and dead-letter state.
-- Docker image recipe, Cloud Run service template, migration runner, separate runtime-role template, and secure membership provisioning CLI.
+- Docker image recipe, Cloud Run service template, private Cloud SQL IAM connector, administrative database bootstrap, migration runner, restricted runtime grants, and secure membership provisioning CLI.
 
 ## Deliberate operating boundaries
 
@@ -32,10 +32,11 @@ Requires Node 24 (the checked runtime), npm, and PostgreSQL with `btree_gist`. U
 
 1. `npm ci`
 2. Create an ignored `.env` using `.env.example`. Configure an approved OAuth client, exact app origin, and database through a secure local mechanism. Never paste secrets into chat.
-3. `npm run migrate` with a migration-owner connection.
-4. Apply `deploy/runtime-role.sql` as the migration owner and grant its role to a separately provisioned application login. Set `DATABASE_URL` to that runtime login.
-5. Provision exact approved identities: `npm run provision -- <company-email> "<name>" <role>`. Do not guess DP's or Tonya's email. Cat's role is `ops`; Tonya's is `bookkeeper`.
-6. `npm start` starts the sign-in surface. Without required configuration, authentication/data access fail closed.
+3. For local development only, set `MIGRATION_DATABASE_URL` and `DATABASE_URL` to dedicated PostgreSQL roles, then run `npm run migrate`. Production rejects these URL variables.
+4. Provision exact approved identities: `npm run provision -- <company-email> "<name>" <role>`. Do not guess DP's or Tonya's email. Cat's role is `ops`; Tonya's is `bookkeeper`.
+5. `npm start` starts the sign-in surface. Without required configuration, authentication/data access fail closed.
+
+For production database activation, first provision the three Cloud SQL IAM users and their Google IAM access. Run `deploy/database-bootstrap.sql` once as the approved database administrator, run migrations as `pb-dashboard-migrate`, then apply `deploy/runtime-role.sql` as that migration identity. Runtime and worker use only `INSTANCE_CONNECTION_NAME`, `DB_NAME`, and their exact `DB_IAM_USER`; they never receive a production database URL or password. This sequence requires a reviewed live plan and authorization before it is applied.
 
 Secure `__Host-` cookies require HTTPS in production. Browser handling of localhost secure cookies must be verified with the actual development OAuth setup; do not weaken cookie settings as a workaround. The production process rejects database superusers, RLS-bypass roles, and table-owning runtime logins.
 
@@ -44,6 +45,9 @@ Secure `__Host-` cookies require HTTPS in production. Browser handling of localh
 ```sh
 npm test
 npm run check
+npm run security:scan
+python -m unittest discover -s tests -p '*_test.py'
+python scripts/render-cloud-build.py --check
 ```
 
 Tests exercise real PostgreSQL semantics via PGlite, including migrations, row security, exclusion constraints, transactional rollback, immutable invoice content, API permissions, replay/idempotency, token encryption, and webhook retry handling. They do not prove Cloud SQL behavior, Google consent, a deployed service, or live provider compatibility. A real PostgreSQL/Cloud SQL staging run remains mandatory.

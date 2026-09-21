@@ -56,6 +56,55 @@ def validate_approval(build, trigger, approver):
     require(result.get('decision') == 'APPROVED' and result.get('approverAccount') == approver,
             'Named owner approval is required')
 
+def validate_service(service):
+    require(service.get('metadata', {}).get('name') == 'pb-dashboard', 'Service identity mismatch')
+    require(service.get('metadata', {}).get('annotations', {}).get('run.googleapis.com/ingress') ==
+            'internal-and-cloud-load-balancing', 'Ingress mismatch')
+    template = service.get('spec', {}).get('template', {})
+    annotations = template.get('metadata', {}).get('annotations', {})
+    try:
+        network = json.loads(annotations.get('run.googleapis.com/network-interfaces', ''))
+    except (TypeError, json.JSONDecodeError):
+        network = None
+    require(network == [{'network': 'pb-prod-vpc', 'subnetwork': 'pb-prod-us-central1',
+                         'tags': 'pb-dashboard'}], 'Private network mismatch')
+    require(annotations.get('run.googleapis.com/vpc-access-egress') == 'private-ranges-only',
+            'Private-ranges-only egress required')
+    try:
+        max_scale = int(annotations.get('autoscaling.knative.dev/maxScale', ''))
+    except (TypeError, ValueError):
+        max_scale = 0
+    require(0 < max_scale <= 5, 'Maximum instance count exceeds the reviewed connection budget')
+    spec = template.get('spec', {})
+    require(spec.get('serviceAccountName') ==
+            'pb-dashboard-runtime@' + PROJECT + '.iam.gserviceaccount.com', 'Runtime identity mismatch')
+    require(0 < int(spec.get('containerConcurrency', 0)) <= 8, 'Container concurrency exceeds the reviewed limit')
+    containers = spec.get('containers', [])
+    require(len(containers) == 1, 'Exactly one dashboard container is required')
+    entries = containers[0].get('env', [])
+    names = [entry.get('name') for entry in entries]
+    require(len(names) == len(set(names)), 'Duplicate environment variables are prohibited')
+    prohibited = {'DATABASE_URL', 'MIGRATION_DATABASE_URL', 'PGPASSWORD', 'PGHOST', 'PGHOSTADDR',
+                  'PGPORT', 'PGUSER', 'PGDATABASE', 'PGSERVICE', 'PGSERVICEFILE', 'PGPASSFILE', 'PGSSLMODE'}
+    require(not prohibited.intersection(names), 'Password-style database configuration is prohibited')
+    env = {entry.get('name'): entry.get('value') for entry in entries}
+    require(env.get('NODE_ENV') == 'production', 'Production environment required')
+    require(env.get('OPERATIONAL_MODE') == 'hcp_coexistence', 'Coexistence required')
+    require(env.get('APP_ORIGIN') == 'https://ops.platinumbleutls.com', 'Application origin mismatch')
+    require(env.get('INSTANCE_CONNECTION_NAME') == PROJECT + ':us-central1:pb-prod-sql',
+            'Cloud SQL instance mismatch')
+    require(env.get('DB_NAME') == 'platinum_bleu', 'Database name mismatch')
+    require(env.get('DB_IAM_USER') == 'pb-dashboard-runtime@' + PROJECT + '.iam',
+            'Database IAM identity mismatch')
+    by_name = {entry.get('name'): entry for entry in entries}
+    for variable, secret in [('GOOGLE_CLIENT_ID', 'pb-google-client-id'),
+                             ('GOOGLE_CLIENT_SECRET', 'pb-google-client-secret')]:
+        entry = by_name.get(variable, {})
+        reference = entry.get('valueFrom', {}).get('secretKeyRef', {})
+        require('value' not in entry and reference.get('name') == secret and
+                re.fullmatch(r'[1-9][0-9]*', str(reference.get('key', ''))),
+                variable + ' must use its approved numbered secret version')
+
 def scan_clean(occurrences):
     discoveries = [o.get('discovery', {}) for o in occurrences if o.get('kind') == 'DISCOVERY']
     for discovery in discoveries:
@@ -103,12 +152,7 @@ def main():
     # Existing service only. Bootstrap configuration, IAM SQL, secrets, networking,
     # provider proof, recovery proof, and final authorization are prerequisites.
     service = gcloud('run', 'services', 'describe', 'pb-dashboard', '--region=' + REGION)
-    template = service['spec']['template']
-    require(template['spec']['serviceAccountName'] == 'pb-dashboard-runtime@' + PROJECT + '.iam.gserviceaccount.com', 'Runtime identity mismatch')
-    env = {e['name']: e.get('value') for e in template['spec']['containers'][0].get('env', [])}
-    require(env.get('OPERATIONAL_MODE') == 'hcp_coexistence', 'Coexistence required')
-    require('DATABASE_URL' not in env, 'Password-style database configuration is prohibited')
-    require(service['metadata'].get('annotations', {}).get('run.googleapis.com/ingress') == 'internal-and-cloud-load-balancing', 'Ingress mismatch')
+    validate_service(service)
     updated = gcloud('run', 'services', 'update', 'pb-dashboard', '--region=' + REGION,
                      '--image=' + IMAGE + '@' + digest, '--no-traffic', '--async')
     print(json.dumps({'builderBuild': build_id, 'commit': sha, 'digest': digest,

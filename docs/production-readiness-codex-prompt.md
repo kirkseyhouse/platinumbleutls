@@ -24,7 +24,7 @@ Repository-only Phase 2 preparation can proceed without creating cloud resources
 
 Keep `OPERATIONAL_MODE=hcp_coexistence`. HCP remains operational source, QBO accounting authority, and Notion operating record. Verify Notion identity before Notion operations. Put implementation status/evidence on the canonical Intake record or handoff, never loose HQ notes.
 
-The remaining production path is Cloud Run in `us-central1`, private IAM-authenticated Cloud SQL, Direct VPC egress, per-secret IAM, bounded pooling, HA/PITR, `us-east1` recovery, audit logs, VPC Service Controls dry-run, and bounded read-only provider validation. The existing password-style database integration and deployment template are unfinished production gates. This signed implementation baseline is not deployable or production-ready.
+The remaining production path is live activation and proof for Cloud Run in `us-central1`, private IAM-authenticated Cloud SQL, Direct VPC/firewall behavior, per-secret IAM, HA/PITR, `us-east1` recovery, audit logs, VPC Service Controls dry-run, and bounded read-only provider validation. The repository implements passwordless IAM database access, bounded pooling, bootstrap/runtime grants, and deployment-template promotion checks, but local validation is not live production evidence. This signed implementation baseline is not deployed or production-authorized.
 
 For each phase, inspect state, make authorized changes, verify actual outcomes, retain redacted evidence, and label verified, failed, blocked, or owner-decision required. Local tests, config syntax and signature checks do not prove live enforcement.
 

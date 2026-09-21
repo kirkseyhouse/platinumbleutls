@@ -62,6 +62,20 @@ resource "google_service_account" "workload" {
   display_name = "Platinum Bleu ${each.key}"
 }
 
+# IAM login identity and PostgreSQL privileges are separate. The SQL instance
+# must already have cloudsql.iam_authentication=on; no password is generated.
+resource "google_sql_user" "workload" {
+  for_each = local.sql_accounts
+  project  = local.project
+  instance = "pb-prod-sql"
+  name     = trimsuffix(google_service_account.workload[each.key].email, ".gserviceaccount.com")
+  type     = "CLOUD_IAM_SERVICE_ACCOUNT"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 # Additive member resources preserve unrelated existing IAM members.
 resource "google_project_iam_member" "sql_client" {
   for_each = local.sql_accounts

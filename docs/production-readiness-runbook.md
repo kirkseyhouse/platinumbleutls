@@ -16,16 +16,7 @@ Complete these phases in order and retain redacted evidence for every exit gate.
 
 Keep `OPERATIONAL_MODE=hcp_coexistence`. Housecall Pro remains operational source, QuickBooks remains accounting authority, and Notion remains the operating record.
 
-Initial inspection snapshot from September 18, 2026, before reauthentication and Phase 2 implementation. Current evidence and superseding results are in `docs/production-readiness/evidence-index.md`; implementation and activation instructions are in `docs/production-readiness/baseline-controls.md`.
-
-- The dashboard repository is on `main`, has no commits, and every implementation file is untracked.
-- The separate website repository has unrelated changes and is out of scope.
-- The active CLI account name is `catherine@platinumbleutls.com`, but live reads fail because the refresh token requires interactive reauthentication.
-- The global project and quota project are still `khproject88`. Never rely on those defaults for this work.
-- The reported billing upgrade is not verified until a fresh read returns `billingEnabled: true` on an open account.
-- The app uses a password-style `DATABASE_URL`; production requires a code change to automatic Cloud SQL IAM database authentication.
-- `deploy/cloud-run.yaml` does not yet express all required secrets or IAM database connector settings.
-- Local tests are not proof of Cloud SQL, OAuth, provider, backup, or production behavior.
+The initial September 18 inspection snapshot is historical. Current evidence and superseding results are in `docs/production-readiness/evidence-index.md`; implementation and activation instructions are in `docs/production-readiness/baseline-controls.md`. The repository now contains the private Cloud SQL IAM connector, separate workload identities, database bootstrap/runtime grants, Direct VPC Cloud Run template, and promotion validation. These are locally validated source controls only. No live Cloud SQL, OAuth, provider, backup, or deployed production behavior is proven.
 
 Fixed names: VPC `pb-prod-vpc`; subnet `pb-prod-us-central1`; private range `pb-sql-private-range`; primary SQL `pb-prod-sql`; replica `pb-prod-sql-dr`; database `platinum_bleu`; Artifact Registry `pb-dashboard`; Cloud Run service `pb-dashboard`; worker job `pb-dashboard-worker`; service accounts `pb-dashboard-runtime`, `pb-dashboard-worker`, `pb-dashboard-migrate`, `pb-dashboard-builder`, and `pb-dashboard-deployer`.
 
@@ -173,7 +164,7 @@ Common mistakes: trusting the `hd` request parameter instead of verified token c
 
 Required code changes before production secrets:
 
-1. Replace production `DATABASE_URL` with the IAM connector design in Phase 5.
+1. Keep production password/URL database variables prohibited and validate the implemented IAM connector design in Phase 5 staging.
 2. Replace one `TOKEN_ENCRYPTION_KEY` with current and previous key versions, a ciphertext key marker, and a controlled re-encryption job.
 3. Add fail-closed startup validation for each enabled provider.
 4. Prevent logs from emitting environment values, authorization headers, tokens, webhook signatures, or payloads.
@@ -224,9 +215,9 @@ gcloud sql users create pb-dashboard-worker@platinum-bleu-drive.iam.gserviceacco
 gcloud sql users create pb-dashboard-migrate@platinum-bleu-drive.iam.gserviceaccount.com --instance=pb-prod-sql --type=cloud_iam_service_account --project=platinum-bleu-drive
 ```
 
-Each needs `roles/cloudsql.client` and `roles/cloudsql.instanceUser`. PostgreSQL grants are separate. Run migrations only as migration identity. Apply `deploy/runtime-role.sql` and grant that role to runtime and worker IAM users. They must not own tables, bypass RLS, or become superuser.
+Each needs `roles/cloudsql.client` and `roles/cloudsql.instanceUser`. PostgreSQL grants are separate. Run `deploy/database-bootstrap.sql` once as the approved database administrator after all three IAM users exist. Run migrations only as `pb-dashboard-migrate`, then apply `deploy/runtime-role.sql` as that migration identity. Bootstrap attaches the restricted `pb_runtime` role to runtime and worker; do not grant migration ownership to either workload. They must not own tables, create schemas, bypass RLS, administer roles/databases, replicate, or become superuser.
 
-Required code change: add `@google-cloud/cloud-sql-connector`; update `src/db.js` for the instance connection name, `ipType: PRIVATE`, `authType: IAM`, database `platinum_bleu`, and workload IAM username; keep `pg.Pool` at five; close connector and pool on shutdown; remove password/`DATABASE_URL` production support; test token refresh, connector failure, pool exhaustion, connection loss and fail-closed startup.
+Implemented repository control: `src/db.js` uses `@google-cloud/cloud-sql-connector` with private IP, automatic IAM authentication, the exact database/workload usernames, a pool maximum of five, coordinated connector/pool shutdown, prohibited production password/URL overrides, and fail-closed role-drift checks. Local tests cover connector failure, pool exhaustion, connection loss, cleanup, identity mismatch, role escalation, ownership, and schema privilege drift. Live staging must still prove token refresh/reconnection, private reachability, PostgreSQL 16 behavior, and Cloud SQL enforcement.
 
 Deploy Cloud Run with Direct VPC egress, `private-ranges-only`, the correct service account and network tag `pb-dashboard`. Allow TCP 5432 only to the database private address. Initial connection budget is five web instances times five connections, 25 total, with capacity reserved for worker, migration, administration and recovery. Keep maximum instances five and concurrency eight until load testing justifies change.
 

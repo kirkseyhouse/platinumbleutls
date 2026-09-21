@@ -1,0 +1,4 @@
+# Public reCAPTCHA v3 sitekey attributes captured in historical public HTML baselines.
+# These exact fingerprints are not credentials; all other generic-api-key findings remain enforced.
+426f7ef2a94b14658930be23f1411606e23d6305:docs/migration/baseline/wordpress-2026-09-09/contact-public.html:generic-api-key:314
+426f7ef2a94b14658930be23f1411606e23d6305:docs/migration/baseline/wordpress-2026-09-09/home-public.html:generic-api-key:351

@@ -43,7 +43,11 @@ Before shared-dependent work:
 9. Report local structural validation separately from observed walkthrough behavior and production
    readiness. Neither a validator pass nor this commit proves live access, integration, business
    outcomes or universal agent compliance. Report verified, structural-only, untested and blocked
-   evidence, owner decisions, exact Git state and the next model/effort recommendation.
+   evidence, owner decisions, exact Git state, the next model/effort recommendation, a one-sentence
+   model rationale, and a ready-to-paste Next Prompt for Codex. The Next Prompt must continue from
+   existing context, state the exact next action and expected output, preserve relevant constraints,
+   and never make Catherine restate known context or desired output. Use `Next Prompt: none` only
+   when no next task is known.
 
 # Platinum Bleu Website Build Instructions
 
